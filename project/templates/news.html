@@ -1,0 +1,25 @@
+{% extends 'default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+News
+{% endblock title %}
+
+{% block content %}
+<h1 class="news_header">Все новости ({{ post_news|length }})</h1>
+{% if post_news %}
+<div class="news_box">
+    {% for news in post_news %}
+    <div class="news">
+        <h3 class="news_title">{{ news.header_field|censor }}</h3>
+        <p class="news_time-in">{{ news.time_in|date:'d M y' }}</p>
+        <p class="news_content">{{ news.text_field|truncatechars:20|censor }}</p>
+        <a class="news_detail" href="{{news.id}}">Подробнее</a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+    <h3>Новости не найдены</h3>
+{% endif %}
+{% endblock content %}

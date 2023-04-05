@@ -1,0 +1,13 @@
+{% extends 'default.html' %}
+
+{% block title %}
+News
+{% endblock title %}
+
+{% block content %}
+<div class="news_id-content">
+    <h1>{{news_id.header_field }}</h1>
+    <p>{{ news_id.text_field }}</p>
+    <p>Дата публикации: {{ news_id.time_in|date:'d M Y' }}</p>
+</div>
+{% endblock content %}

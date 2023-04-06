@@ -53,6 +53,9 @@ class Post(models.Model):
         else:
             return self.text_field
 
+    def get_absolute_url(self):
+        return f'/news/{self.id}'
+
 
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

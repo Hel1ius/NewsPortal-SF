@@ -9,5 +9,6 @@ News
     <h1>{{news_id.header_field }}</h1>
     <p>{{ news_id.text_field }}</p>
     <p>Дата публикации: {{ news_id.time_in|date:'d M Y' }}</p>
+    <a class="button-3" href="{% url 'post_update' pk=news_id.id %}">Редактировать</a>
 </div>
 {% endblock content %}

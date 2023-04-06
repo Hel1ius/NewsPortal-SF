@@ -14,8 +14,9 @@
     <header class="header">
         <a class="header_logo" href="#">NP</a>
         <a class="header_choices" href="#">Главная</a>
-        <a class="header_choices" href="#">Новости</a>
+        <a class="header_choices" href="{% url 'NewsList' %}">Новости</a>
         <a class="header_choices" href="#">Статьи</a>
+        <a class="header_choices" href="{% url 'post_search' %}">Поиска</a>
     </header>
     <div class="content">
         {% block content %}

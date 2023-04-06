@@ -1,29 +1,34 @@
-from django.views.generic import ListView, DetailView
-from .models import Post
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.http import Http404
-from datetime import datetime
+from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
+
+from .models import Post
+from .filters import NewsFilter
+from .forms import PostForm
 
 
 class NewsList(ListView):
     model = Post
-    ordering = 'time_in'
-    template_name = 'news.html'
+    template_name = 'post/news.html'
     context_object_name = 'post_news'
+    paginate_by = 2
 
     def get_queryset(self):
         news = super().get_queryset()
         news = news.filter(selection_field='news')
         return news
 
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['time_now'] = datetime.utcnow()
-    #     return context
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter'] = NewsFilter(self.request.GET, queryset=self.get_queryset())
+        context['count'] = self.get_queryset().filter(selection_field='news').count()
+        return context
 
 class NewsDetail(DetailView):
     model = Post
-    template_name = 'news_id.html'
+    template_name = 'post/news_id.html'
     context_object_name = 'news_id'
 
     def get(self, request, *args, **kwargs):
@@ -38,3 +43,44 @@ class NewsDetail(DetailView):
         context = super().get_context_data(**kwargs)
         context['some_other_data'] = ...
         return context
+
+class SearchList(ListView):
+    model = Post
+    template_name = 'post/news_search.html'
+    context_object_name = 'search'
+    paginate_by = 10
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        author_query = self.request.GET.get('author')
+        header_query = self.request.GET.get('header_field')
+        time_query = self.request.GET.get('time_in')
+
+        object_list = self.model.objects.filter(selection_field='news')
+        if query:
+            object_list = object_list.filter(Q(title__icontains=query))
+        if author_query:
+            object_list = object_list.filter(Q(author__user__username__icontains=author_query))
+        if header_query:
+            object_list = object_list.filter(Q(header_field__icontains=header_query))
+        if time_query:
+            object_list = object_list.filter(Q(time_in__gt=time_query))
+        return object_list.order_by('-time_in')
+
+
+class PostCreateView(CreateView):
+    template_name = 'post/add.html'
+    form_class = PostForm
+
+class PostUpdateView(UpdateView):
+    template_name = 'post/edit.html'
+    form_class = PostForm
+
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('pk')
+        return Post.objects.get(pk=id)
+
+class PostDeleteView(DeleteView):
+    template_name = 'post/delete.html'
+    queryset = Post.objects.all()
+    success_url = '/news/'

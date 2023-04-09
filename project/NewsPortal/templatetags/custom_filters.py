@@ -1,11 +1,10 @@
-import re
 from django import template
 
 register = template.Library()
 
 @register.filter(name='censor')
 def censor(value):
-    value = value.lower()
+    value = 'dasdasdas dasdas asdasdasd asd as'
     bad_words = ['первое', 'второе', 'третье']
 
     words = value.split()
@@ -16,3 +15,8 @@ def censor(value):
             words[i] = '{}{}'.format(first_letter, asterisks)
 
     return ' '.join(words)
+
+
+
+
+

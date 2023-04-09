@@ -1,12 +1,13 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.http import Http404
 from django.db.models import Q
-from django.core.paginator import Paginator, EmptyPage, InvalidPage
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 
-from .models import Post
+from .models import Post, Author
 from .filters import NewsFilter
 from .forms import PostForm
-
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 class NewsList(ListView):
     model = Post
@@ -68,19 +69,21 @@ class SearchList(ListView):
         return object_list.order_by('-time_in')
 
 
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'post/add.html'
     form_class = PostForm
+    permission_required = ('NewsPortal.add_post',)
 
-class PostUpdateView(UpdateView):
+class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'post/edit.html'
     form_class = PostForm
+    permission_required = ('NewsPortal.change_post',)
 
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
 
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'post/delete.html'
     queryset = Post.objects.all()
     success_url = '/news/'

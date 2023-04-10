@@ -128,7 +128,7 @@ class PostSuccessfullyView(DetailView):
         msg = EmailMultiAlternatives(
             subject=f'{header_field} subscription',
             body='',
-            from_email='khegaivyacheslavA@yandex.com',
+            from_email='khegaivyacheslavA@yandex.ru',
             to=[email]
         )
         msg.attach_alternative(html, "text/html")

@@ -9,6 +9,12 @@ News
     <h1>{{news_id.header_field }}</h1>
     <p>{{ news_id.text_field }}</p>
     <p>Дата публикации: {{ news_id.time_in|date:'d M Y' }}</p>
+    <p>Автор: {{ news_id.author.user.username }}</p>
+    <p class="news_categories">Категория:
+        {% for post_category in news_id.postcategory_set.all %}
+            {{ post_category.category.category_name }}
+        {% endfor %}
+    </p>
     <a class="button-3" href="{% url 'post_update' pk=news_id.id %}">Редактировать</a>
 </div>
 {% endblock content %}

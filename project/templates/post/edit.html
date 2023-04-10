@@ -10,6 +10,10 @@
     {{ form.selection_field }}
   </div>
   <div>
+      <label for="{{ form.categories.id_for_label }}">Выберите категорию</label>
+      {{ form.categories }}
+  </div>
+  <div>
     <label for="{{ form.header_field.id_for_label }}">Заголовок:</label>
     {{ form.header_field }}
   </div>
@@ -25,6 +29,6 @@
     <label for="{{ form.check_box.id_for_label }}">Подтвердить!:</label>
     {{ form.check_box }}
   </div>
-  <button type="submit">Добавить</button>
+  <button type="submit">Изменить</button>
 </form>
 {% endblock content %}

@@ -4,7 +4,6 @@ register = template.Library()
 
 @register.filter(name='censor')
 def censor(value):
-    value = 'dasdasdas dasdas asdasdasd asd as'
     bad_words = ['первое', 'второе', 'третье']
 
     words = value.split()

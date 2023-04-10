@@ -2,12 +2,37 @@
 {% block title %} Профиль пользователя {% endblock title %}
 
 {% block content %}
-<h3 class="news_title">Профиль пользователя</h3>
-<p>Ваш nickname: {{ user_profile.username }}</p>
-<p>Ваш Email: {{ user_profile.email }}</p>
-{% if is_not_author %}
-    <button class="button-3"><a href="upgrade/">Стать автором!</a></button>
-{% else %}
-    <p>Вы являетесь автором</p>
-{% endif %}
+    <h3 class="news_title">Профиль пользователя</h3>
+    <div class="profile_content"s>
+        <div>
+            <p>Ваш nickname: {{ user_profile.username }}</p>
+            <p>Ваш Email: {{ user_profile.email }}</p>
+            {% if is_not_author %}
+                <button class="button-3"><a href="upgrade/">Стать автором!</a></button>
+            {% else %}
+                <p>Вы являетесь автором</p>
+            {% endif %}
+        </div>
+        <div>
+            {% for category, users in subscribers.items %}
+                <h3>{{ category }}</h3>
+
+                {% if user.is_authenticated %}
+                    {% if user not in users %}
+                        <form method="post" action="{% url 'subscribe' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="category" value="{{ category }}">
+                            <button type="submit">Подписаться на рассылку</button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="{% url 'unsubscribe' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="category" value="{{ category }}">
+                            <button type="submit">Отписаться от рассылки</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
 {% endblock content %}

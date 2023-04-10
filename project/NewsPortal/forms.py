@@ -6,4 +6,4 @@ class PostForm(ModelForm):
 
     class Meta:
         model = Post
-        fields = ['selection_field', 'header_field', 'text_field', 'author', 'check_box']
+        fields = ['selection_field', 'header_field', 'text_field', 'author', 'categories', 'check_box']

@@ -1,13 +1,22 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.http import Http404
+from django.http import Http404, HttpResponse, response
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.urls import reverse_lazy
+from django.core.mail import send_mail
+from django.contrib import messages
+from django.views import View
+from django.shortcuts import render, reverse, redirect
+from django.core.mail import EmailMultiAlternatives
+from datetime import date
+from django.template.loader import render_to_string
 
-from .models import Post, Author
+from .models import Post, Category, PostCategory
 from .filters import NewsFilter
 from .forms import PostForm
-from django.contrib.auth.mixins import PermissionRequiredMixin
+
+
 
 class NewsList(ListView):
     model = Post
@@ -20,12 +29,12 @@ class NewsList(ListView):
         news = news.filter(selection_field='news')
         return news
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['filter'] = NewsFilter(self.request.GET, queryset=self.get_queryset())
         context['count'] = self.get_queryset().filter(selection_field='news').count()
         return context
+
 
 class NewsDetail(DetailView):
     model = Post
@@ -42,8 +51,8 @@ class NewsDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['some_other_data'] = ...
         return context
+
 
 class SearchList(ListView):
     model = Post
@@ -73,6 +82,94 @@ class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'post/add.html'
     form_class = PostForm
     permission_required = ('NewsPortal.add_post',)
+    success_url = reverse_lazy('created')
+
+    # def form_valid(self, form):
+    #     post = form.save()
+    #
+    #     categories = PostCategory.objects.filter(post=post)
+    #     subscribers = []
+    #     for category in categories:
+    #         subscribers += list(category.category.subscribers.all())
+    #
+    #     for subscriber in subscribers:
+    #         send_mail(
+    #             subject='New Post Notification',
+    #             message=f'A new post has been created in {category.category.category_name} category.',
+    #             from_email='khegaivyacheslavA@yandex.ru',
+    #             recipient_list=[subscriber.email],
+    #             fail_silently=False,
+    #         )
+    #     return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('created', kwargs={'pk': self.object.id})
+
+
+class PostSuccessfullyView(DetailView):
+    template_name = 'post/created.html'
+    model = Post
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        email = user.email
+        header_field = self.object.header_field
+        # print(f'user: {user}')
+        # print(f'email: {email}')
+        # print(f'header_field: {header_field}')
+
+        html = render_to_string('post/created.html',
+                                {'header_field': header_field,
+                                 'user': user
+                                 }
+                                )
+        print(html)
+        msg = EmailMultiAlternatives(
+            subject=f'{header_field} subscription',
+            body='',
+            from_email='khegaivyacheslavA@yandex.com',
+            to=[email]
+        )
+        msg.attach_alternative(html, "text/html")
+        try:
+            msg.send()
+        except Exception as e:
+            print(e)
+        return context
+
+    # def distribution_news(self):
+    #     user = self.request.user
+    #     email = user.email
+    #     header_field = self.object.header_field
+    #     print(f'user: {user}')
+    #     print(f'email: {email}')
+    #     print(f'header_field: {header_field}')
+    #
+    #     html = render_to_string('post/created.html',
+    #                             {'header_field': header_field,
+    #                              'user': user
+    #                              }
+    #                             )
+    #     msg = EmailMultiAlternatives(
+    #         subject=f'{header_field} subscription',
+    #         body='',
+    #         from_email='khegaivyacheslavA@yandex.com',
+    #         to=[email]
+    #     )
+    #     msg.attach_alternative(html, "text/html")
+    #     try:
+    #         msg.send()
+    #     except Exception as e:
+    #         print(e)
+    #     return redirect('created')
+
+
+
+
+    # html = render_to_string('post/created.html',
+    #                         'selection_field': selection_field)
+
 
 class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'post/edit.html'
@@ -82,6 +179,7 @@ class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
+
 
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'post/delete.html'

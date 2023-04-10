@@ -1,0 +1,4 @@
+<h1>Post created successfully</h1>
+<p>Заголовок: {{ object.header_field }}</p>
+<p>Содержание: {{ object.text_field|slice:":50" }}...</p>
+<p>Автор: {{ object.author.user.username }}</p>

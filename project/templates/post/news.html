@@ -17,6 +17,11 @@ News
                 <h3 class="news_title">{{ news.header_field|censor }}</h3>
                 <p class="news_time-in">{{ news.time_in|date:'d M y' }}</p>
                 <p class="news_content">{{ news.text_field|truncatechars:20|censor }}</p>
+                <p class="news_categories">Категория:
+                    {% for post_category in news.postcategory_set.all %}
+                        {{ post_category.category.category_name }}
+                    {% endfor %}
+                </p>
                 <a class="news_detail" href="{{ news.id }}">Подробнее</a>
                 <a class="news_delete" href="{% url 'post_delete' pk=news.id %}">Удалить</a>
             </div>

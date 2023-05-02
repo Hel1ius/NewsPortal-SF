@@ -4,6 +4,7 @@ from django import forms
 
 
 class BaseRegisterForm(UserCreationForm):
+    username = forms.CharField(label="Никнейм")
     email = forms.EmailField(label="Email")
     first_name = forms.CharField(label="Имя")
     last_name = forms.CharField(label="Фамилия")

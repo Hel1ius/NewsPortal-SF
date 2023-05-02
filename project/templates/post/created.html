@@ -1,4 +1,11 @@
-<h1>Post created successfully</h1>
-<p>Заголовок: {{ object.header_field }}</p>
-<p>Содержание: {{ object.text_field|slice:":50" }}...</p>
-<p>Автор: {{ object.author.user.username }}</p>
+{% extends "default.html" %}
+{% block title %} Successfully {% endblock title %}
+
+{% block content %}
+    <div class="content content_created">
+        <h1>Post created successfully</h1>
+        <p>Заголовок: {{ successfully.header_field }}</p>
+        <p>Содержание: {{ successfully.text_field|slice:":50" }}...</p>
+        <p>Автор: {{ successfully.author.user.username }}</p>
+    </div>
+{% endblock content %}

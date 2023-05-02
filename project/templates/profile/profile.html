@@ -12,6 +12,7 @@
             {% else %}
                 <p>Вы являетесь автором</p>
             {% endif %}
+            <a class="button-3" href="{% url 'logout' %}">Выйти</a>
         </div>
         <div>
             {% for category, users in subscribers.items %}

@@ -154,3 +154,7 @@ a {
     display: flex;
     justify-content: space-between;
 }
+
+.content_created {
+    align-items: center;
+}

@@ -4,10 +4,10 @@ from .views import BaseRegisterView, ProfileView, upgrade_me, subscribe_to_categ
 
 urlpatterns = [
     path('', ProfileView.as_view(), name='profile'),
-    path('login/', LoginView.as_view(template_name='sign/login.html'), name='login'),
-    path('logout/', LogoutView.as_view(template_name='sign/logout.html'), name='logout'),
-    path('signup/', BaseRegisterView.as_view(template_name='sign/signup.html'), name='signup'),
+    path('logout/', LogoutView.as_view(next_page='NewsList'), name='logout'),
     path('upgrade/', upgrade_me, name='upgrade'),
     path('subscribe/', subscribe_to_category, name='subscribe'),
-    path('unsubscribe/', unsubscribe_from_category, name='unsubscribe')
+    path('unsubscribe/', unsubscribe_from_category, name='unsubscribe'),
+#     path('signup/', BaseRegisterView.as_view(template_name='sign/signup.html'), name='signup'),
+#     path('login/', LoginView.as_view(template_name='sign/login.html'), name='login'),
 ]

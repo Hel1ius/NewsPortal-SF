@@ -2,15 +2,14 @@ from django.contrib.auth.models import User
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
+from django.contrib.auth import logout
 
 from .models import BaseRegisterForm
-from NewsPortal.models import Category, PostCategory
+from NewsPortal.models import Category, Author
 
 
 class BaseRegisterView(CreateView):
@@ -71,6 +70,8 @@ def upgrade_me(request):
     author_group = Group.objects.get(name='authors')
     if not request.user.groups.filter(name='authors').exists():
         author_group.user_set.add(user)
+        author = Author.objects.create(user=user)
+        author.save()
     return redirect('/')
 
 # @login_required

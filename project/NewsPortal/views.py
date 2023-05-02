@@ -1,21 +1,13 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.http import Http404, HttpResponse, response
+from django.http import Http404
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse_lazy
-from django.core.mail import send_mail
-from django.contrib import messages
-from django.views import View
-from django.shortcuts import render, reverse, redirect
-from django.core.mail import EmailMultiAlternatives
-from datetime import date
-from django.template.loader import render_to_string
 
-from .models import Post, Category, PostCategory
+from .models import Post
 from .filters import NewsFilter
 from .forms import PostForm
-
 
 
 class NewsList(ListView):
@@ -81,94 +73,22 @@ class SearchList(ListView):
 class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'post/add.html'
     form_class = PostForm
+    model = Post
     permission_required = ('NewsPortal.add_post',)
-    success_url = reverse_lazy('created')
-
-    # def form_valid(self, form):
-    #     post = form.save()
-    #
-    #     categories = PostCategory.objects.filter(post=post)
-    #     subscribers = []
-    #     for category in categories:
-    #         subscribers += list(category.category.subscribers.all())
-    #
-    #     for subscriber in subscribers:
-    #         send_mail(
-    #             subject='New Post Notification',
-    #             message=f'A new post has been created in {category.category.category_name} category.',
-    #             from_email='khegaivyacheslavA@yandex.ru',
-    #             recipient_list=[subscriber.email],
-    #             fail_silently=False,
-    #         )
-    #     return super().form_valid(form)
+    success_url = reverse_lazy('created'),
 
     def get_success_url(self):
         return reverse_lazy('created', kwargs={'pk': self.object.id})
 
 
-class PostSuccessfullyView(DetailView):
+class PostSuccessfullyView(LoginRequiredMixin, DetailView):
     template_name = 'post/created.html'
     model = Post
+    context_object_name = 'successfully'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user
-        email = user.email
-        header_field = self.object.header_field
-        # print(f'user: {user}')
-        # print(f'email: {email}')
-        # print(f'header_field: {header_field}')
-
-        html = render_to_string('post/created.html',
-                                {'header_field': header_field,
-                                 'user': user
-                                 }
-                                )
-        print(html)
-        msg = EmailMultiAlternatives(
-            subject=f'{header_field} subscription',
-            body='',
-            from_email='khegaivyacheslavA@yandex.ru',
-            to=[email]
-        )
-        msg.attach_alternative(html, "text/html")
-        try:
-            msg.send()
-        except Exception as e:
-            print(e)
         return context
-
-    # def distribution_news(self):
-    #     user = self.request.user
-    #     email = user.email
-    #     header_field = self.object.header_field
-    #     print(f'user: {user}')
-    #     print(f'email: {email}')
-    #     print(f'header_field: {header_field}')
-    #
-    #     html = render_to_string('post/created.html',
-    #                             {'header_field': header_field,
-    #                              'user': user
-    #                              }
-    #                             )
-    #     msg = EmailMultiAlternatives(
-    #         subject=f'{header_field} subscription',
-    #         body='',
-    #         from_email='khegaivyacheslavA@yandex.com',
-    #         to=[email]
-    #     )
-    #     msg.attach_alternative(html, "text/html")
-    #     try:
-    #         msg.send()
-    #     except Exception as e:
-    #         print(e)
-    #     return redirect('created')
-
-
-
-
-    # html = render_to_string('post/created.html',
-    #                         'selection_field': selection_field)
 
 
 class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):

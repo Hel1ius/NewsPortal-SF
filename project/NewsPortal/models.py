@@ -26,7 +26,7 @@ class Category(models.Model):
     subscribers = models.ManyToManyField(User, related_name='subscription')
 
     def __str__(self):
-        return f'{self.category_name.title()}'
+        return f'{self.category_name}'
 
 class Post(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
@@ -38,7 +38,7 @@ class Post(models.Model):
     post_rating = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'{self.header_field.title()}: {self.text_field.title()}'
+        return f'{self.header_field}: {self.text_field}'
 
     def like(self):
         self.post_rating += 1
@@ -61,7 +61,6 @@ class Post(models.Model):
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

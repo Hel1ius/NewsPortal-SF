@@ -1,4 +1,0 @@
-{% load i18n %}
-{% autoescape off %}
-{% blocktrans %}Подтверждение регистрации аккаунта{% endblocktrans %}
-{% endautoescape %}

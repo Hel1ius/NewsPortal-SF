@@ -1,0 +1,34 @@
+{% extends 'default.html' %}
+
+{% block title %}
+{% if object %}
+Update Post
+{% else %}
+Create Post
+{% endif %}
+{% endblock title %}
+
+{% block content %}
+    <div class="update_box">
+        {% if object %}
+            <h3 class="news_header-box">Редактирование поста</h3>
+        {% else %}
+            <h3 class="news_header-box">Создание нового поста</h3>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            {{ form }}
+<!--            <label for="choice">Выберите раздел</label>-->
+<!--            <select id="choice">-->
+<!--                {% for choice in post.choice %}-->
+<!--                    <option value="{{ choice }}" selected>1</option>-->
+<!--                {% endfor %}}-->
+<!--            </select>-->
+<!--            <label for="header">Заголовок:</label>-->
+<!--            <input type="text" name="header" id="header" value="{{ post.header }}">-->
+<!--            <label for="content">Текст:</label>-->
+<!--            <textarea name="content" id="content" value="{{ post.content }}"></textarea>-->
+            <input type="submit" value="Добавить товар">
+        </form>
+    </div>
+{% endblock content %}

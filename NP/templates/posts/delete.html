@@ -1,0 +1,12 @@
+{% extends 'default.html' %}
+
+{% block title %}
+Delete Post
+{% endblock title %}
+
+{% block content %}
+    <h2>Вы точно хотите удалить данный пост?</h2>
+    <form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="подтвердить"></form>
+{% endblock content %}

@@ -1,0 +1,7 @@
+{% extends 'default.html' %}
+{% block content %}
+{% include 'include/profile_header.html' %}
+{% if is_not_author %}
+<button disabled><a href="{% url 'upgrade' %}">Стать автором</a></button>
+{% endif %}
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends 'default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+    Search
+{% endblock title %}
+
+{% block content %}
+    <h3 class="search_header">Поиск по сайту</h3>
+    <form method="GET" class="search_form">
+        {{ filter.form }}
+        <input type="submit" value="Найти">
+    </form>
+    {% if result %}
+        <div class="content-container">
+            {% for news in filter.qs %}
+                            <a class="content_box" href="{% url 'NewsId' news.id %}">
+                                <h3 class="content_box-header">{{ news.header|censor }}</h3>
+                                <p class="content_box-datetime">{{ news.time_in|date:"d M Y" }}</p>
+                                <p class="content_box-content">{{ news.content|truncatechars:100|censor }}</p>
+                                <p class="content_box-author">{{ news.author.user.username }}</p>
+                            </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock content %}

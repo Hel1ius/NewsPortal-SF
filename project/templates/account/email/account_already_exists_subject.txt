@@ -1,4 +1,0 @@
-{% load i18n %}
-{% autoescape off %}
-{% blocktrans %}Предупреждение об использование вашей почты{% endblocktrans %}
-{% endautoescape %}

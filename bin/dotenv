@@ -1,4 +1,4 @@
-#!/Users/vyacheslav/PycharmProjects/NewsPortal_SF/bin/python
+#!/Users/vyacheslav/PycharmProjects/NP/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

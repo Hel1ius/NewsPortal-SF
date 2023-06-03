@@ -1,0 +1,24 @@
+{% extends 'default.html' %}
+
+{% block title %}
+    News
+{% endblock title %}
+
+{% block content %}
+    <div class="news_header-box">
+        <div class="news_header-box image" id="random-image"></div>
+        <h3 class="news_header-box-header">{{ news_id.header }}</h3>
+    </div>
+    <p class="news_id-content">{{ news_id.content }}</p>
+    <div class="news_id_box">
+        <p class="news_id-datetime">Дата написания: {{ news_id.time_in|date:"d M Y" }}</p>
+        <form method="POST" action="{% url 'subscribe' post_id=news_id.id %}">
+            {% csrf_token %}
+            <button type="submit">Подписаться</button>
+        </form>
+        <div class="news_id-function">
+            <a href="{% url 'Update' news_id.id %}">Редактировать</a>
+            <a href="{% url 'Delete' news_id.id %}">Удалить</a>
+        </div>
+    </div>
+{% endblock content %}
